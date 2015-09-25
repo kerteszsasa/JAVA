@@ -1,0 +1,44 @@
+#ifendef MISE_COMMANDS__
+#define MISE_COMMANDS__
+
+/**************HEXAPOD********************/
+
+/** 0-20 commands ************************/
+//reserved for ack, reack, ok, heartbeat, stb
+
+/** 21 - 50 commands: HEXAPOD TO PC ******/
+#define INFO_STRING 21
+//n byte character
+
+#define BATTERY_VOLTAGE 22
+// 4 byte int: xx.xx V
+
+#define SUPPLY_STATE 23
+// 1 byte: 0 -> off, 1 -> on
+
+#define LEG_CURRENT 24
+// 6x 4 byte, 6x 4 int: 1-6 leg current in mA
+
+
+
+
+
+/** 51 - 80 commands: PC to HEXAPOD******/ 
+#define STOP_COMMAND 51
+//0 byte: no data 
+
+#define SUPPLY_ONOFF 52
+// 1 byte: 1-> on, 0-> off
+
+#define SYSTEM_OFF 53
+//0 byte: no data 
+
+#define SET_SERVO 54
+// 3byte: servo number, servo position, servo delay
+
+
+
+
+
+
+#endif

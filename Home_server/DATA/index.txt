@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>HTML in 10 Simple Steps or Less</title>
+       
+    </head>
+
+
+<body>
+
+<button type="button" onclick="alert('Hello world!')">Click Me!</button>
+
+
+
+<input type="image" src="button.jpg" alt="Submit"    width="48" height="48">
+
+
+<form action="asdf" method="post">
+<input type="image" src="button.jpg" alt="Submit"    width="48" height="48">
+</form>
+
+
+
+<form action="fgfgfgfgfg" method="post">
+<button>Send my greetings</button>
+</form>
+
+
+
+
+
+
+<object width="300" height="300" type="text/plain" data="a.txt"   border="2" >
+</object>
+
+
+
+
+ 
+</body>
+</html>

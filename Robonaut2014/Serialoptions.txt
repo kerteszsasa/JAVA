@@ -1,0 +1,4 @@
+PORT:
+COM3
+BAUD:
+19200
