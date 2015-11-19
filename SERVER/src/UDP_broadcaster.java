@@ -34,7 +34,7 @@ public class UDP_broadcaster {
 
 				
 				
-				for (int i = 0; i < 256*256; i++) {
+				for (int i = 0; i < 256; i++) {
 
 					String ip = "192.168." + i + ".255";
 					// System.out.println(ip);
@@ -42,7 +42,7 @@ public class UDP_broadcaster {
 					byte[] sendData = new byte[1024];
 					sendData = msg.getBytes();
 					// System.out.println("UDP SEND to: " + port + " MSG: " + msg);
-					UDP_send(sendData, "127.0.0.1" , port);
+					UDP_send(sendData, ip , port);
 				}
 				System.out.println("UDP");
 
