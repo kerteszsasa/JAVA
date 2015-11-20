@@ -1,4 +1,11 @@
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -6,6 +13,69 @@ import javax.swing.JOptionPane;
 public class SERVER {
     public static void main(String[] args) {
     	
+    	// create a synchronized map
+    	Map<String, List<ByteBuffer> > RXmap = new HashMap<String, List<ByteBuffer>>();
+    	Map<String, List<ByteBuffer> > TXmap = new HashMap<String, List<ByteBuffer>>();
+        // create a synchronized map
+        Map<String, List<ByteBuffer>> TcpRxTunnel = Collections.synchronizedMap(RXmap);
+        Map<String, List<ByteBuffer>> TcpTxTunnel = Collections.synchronizedMap(TXmap);
+        
+        
+        
+        
+        
+        
+        
+        
+        
+         List<ByteBuffer> list = new ArrayList<ByteBuffer>();
+         
+         ByteBuffer dummyResponse;
+		try {
+			dummyResponse = ByteBuffer.wrap("ok".getBytes("UTF-8"));
+			 list.add(dummyResponse);
+		} catch (UnsupportedEncodingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+        
+       /* 
+        TcpTxTunnel.put("a", "1");
+        TcpTxTunnel.put("as", "12");
+        TcpTxTunnel.put("asd", "123");
+        TcpTxTunnel.put("asdf", "1234");
+        TcpTxTunnel.put("a", "22222");
+        
+        TcpTxTunnel.get("as");
+        TcpTxTunnel.remove("asd");
+
+        
+        RXmap.put("elso", )
+        
+        
+        */
+        
+		 TcpTxTunnel.put("elso", list);
+		 TcpTxTunnel.put("masodik", list);
+		 TcpTxTunnel.put("harmadik", list);
+		 
+        
+        System.out.println( TcpTxTunnel.keySet() );
+        
+        System.out.println(  TcpTxTunnel.get("defef") );
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     	
 		System.out.println("SERVER started \n");
 		Logger logger = new Logger();

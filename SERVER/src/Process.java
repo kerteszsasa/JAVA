@@ -29,7 +29,10 @@ public class Process{
 	
 	
    void do_things(){
-	   System.out.println("process thread is running");
+	   System.out.print("process thread is running: ");
+	   
+	   System.out.print("TCP receive and send    ");
+	   System.out.println("feltételek vizsgálata");
    }
    
    
