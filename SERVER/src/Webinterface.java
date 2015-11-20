@@ -39,6 +39,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+//import Webinterface.WebinterfaceThread;
+
 /**
  * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
  * Java Copyright 2001 by Jeff Heaton
@@ -166,20 +168,49 @@ public class Webinterface {
   /**
    * WebServer constructor.
    */
-  protected void start() {
+	int port;
+
+
+	public Webinterface(int port){
+		this.port = port;
+		startWebinterfaceThread();
+
+	}
+	
+	
+	//futó szál
+	public void startWebinterfaceThread() {
+	    new Thread(new WebinterfaceThread()).start();
+	}
+	
+	private class WebinterfaceThread implements Runnable {
+	    public void run() {
+			while (true) {
+				start_server();
+			}
+	    }
+	}
+
+   
+
+	
+	
+	
+	
+  protected void start_server() {
     ServerSocket s;
 
-    System.out.println("Webserver starting up on port 8080");
-    System.out.println("(press ctrl-c to exit)");
+    System.out.print("Webserver starting up on port " + port);
+    System.out.println("(   press ctrl-c to exit)");
     try {
       // create the main server socket
-      s = new ServerSocket(8080);
+      s = new ServerSocket(port);
     } catch (Exception e) {
       System.out.println("Error: " + e);
       return;
     }
 
-    System.out.println("Waiting for connection");
+    //System.out.println("Waiting for connection");
     for (;;) {
       try {
         // wait for a connection

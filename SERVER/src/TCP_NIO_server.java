@@ -43,39 +43,9 @@ public TCP_NIO_server() throws IOException {
 public TCP_NIO_server(int port) throws IOException {
     this.port = port;
     selector = initSelector();
-   // loop();
     new TCP_Thread().start();
 }
 
-/*private void loop() {
-    while (true) {
-        try{
-            selector.select();
-            Iterator<SelectionKey> selectedKeys = selector.selectedKeys().iterator();
-            while (selectedKeys.hasNext()) {
-                SelectionKey key = selectedKeys.next();
-                selectedKeys.remove();
-
-                if (!key.isValid()) {
-                    continue;
-                }
-
-                // Check what event is available and deal with it
-                if (key.isAcceptable()) {
-                    accept(key);
-                } else if (key.isReadable()) {
-                    read(key);
-                } else if (key.isWritable()) {
-                    write(key);
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-}*/
 
 
   class TCP_Thread extends Thread {

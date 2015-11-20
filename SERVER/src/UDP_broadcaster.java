@@ -9,12 +9,14 @@ public class UDP_broadcaster {
 	int port;
 	String msg;
 	int repeat_time_s;
+	String gateway_ip;
 
-	public UDP_broadcaster(int port, String msg, int repeat_time_s) {
+	public UDP_broadcaster(int port, String msg, int repeat_time_s, String gateway_ip) {
 		UDP_broadcasterThread();
 		this.port = port;
 		this.msg = msg;
 		this.repeat_time_s = repeat_time_s;
+		this.gateway_ip = gateway_ip;
 	}
 
 	// futó szál
@@ -32,16 +34,20 @@ public class UDP_broadcaster {
 					// e.printStackTrace();
 				}
 
+								
+				int dot1 = gateway_ip.indexOf(".");
+				String ip_part = gateway_ip.substring(dot1+1,gateway_ip.length());
+				int dot2 = ip_part.indexOf("." );
+				String ip_begin = gateway_ip.substring(0, dot1 + 1 + dot2 +1);
 				
 				
 				for (int i = 0; i < 256; i++) {
-
-					String ip = "192.168." + i + ".255";
+					String ip = ip_begin + i + ".255";
 					// System.out.println(ip);
 
 					byte[] sendData = new byte[1024];
 					sendData = msg.getBytes();
-					// System.out.println("UDP SEND to: " + port + " MSG: " + msg);
+					// System.out.println("UDP SEND to: " + ip + ": " + port + " MSG: " + msg);
 					UDP_send(sendData, ip , port);
 				}
 				System.out.println("UDP");

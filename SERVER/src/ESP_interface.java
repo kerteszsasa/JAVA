@@ -20,7 +20,7 @@ public class ESP_interface {
 
 
     public ESP_interface() throws Exception {
-        System.out.println("ESP interface started, listen on "+ESP_input_PORT+" TCP port.");
+        System.out.print("ESP interface started, listen on "+ESP_input_PORT+" TCP port.   ");
         System.out.println("ESP interface started, send to "+ESP_output_PORT+" TCP port.");
         ServerSocket listener = new ServerSocket(ESP_input_PORT);     
         new TCP_ListenerThread(listener, INCOMING_MSG).start();
