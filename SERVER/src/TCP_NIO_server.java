@@ -15,8 +15,11 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 
@@ -36,11 +39,14 @@ private Selector selector;
 private long loopTime;
 private long numMessages = 0;
 
-public TCP_NIO_server() throws IOException {
-    this(DEFAULT_PORT);
-}
+Map<String, List<ByteBuffer>> TcpRxTunnel ;
+Map<String, List<ByteBuffer>> TcpTxTunnel ;
 
-public TCP_NIO_server(int port) throws IOException {
+
+public TCP_NIO_server(int port, Map<String, List<ByteBuffer>> RX, Map<String, List<ByteBuffer>> TX) throws IOException {
+	this.TcpRxTunnel = RX;
+	this.TcpTxTunnel = TX;
+	
     this.port = port;
     selector = initSelector();
     new TCP_Thread().start();
@@ -74,6 +80,15 @@ public TCP_NIO_server(int port) throws IOException {
 	                } else if (key.isWritable()) {
 	                    write(key);
 	                }
+	                
+	                
+	        		try {
+						Thread.sleep(1);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+	                
 	            }
 
 	        } catch (Exception e) {
@@ -104,6 +119,7 @@ private void read(SelectionKey key) throws IOException {
     // Clear out our read buffer so it's ready for new data
     readBuffer.clear();
 
+
     // Attempt to read off the channel
     int numRead;
     try {
@@ -115,7 +131,7 @@ private void read(SelectionKey key) throws IOException {
         System.out.println("Forceful shutdown");
         return;
     }
-    System.out.println(socketChannel.getRemoteAddress());
+
     if (numRead == -1) {
         System.out.println("Graceful shutdown");
         key.channel().close();
@@ -123,7 +139,10 @@ private void read(SelectionKey key) throws IOException {
 
         return;
     }
-System.out.println(socketChannel.getRemoteAddress());
+//System.out.println("TEST: "+socketChannel.getRemoteAddress()+ "DATA: "+ readBuffer.toString());
+    incomingdata(socketChannel.getRemoteAddress().toString(), readBuffer, TcpRxTunnel);
+
+
     socketChannel.register(selector, SelectionKey.OP_WRITE);
 
     numMessages++;
@@ -136,14 +155,21 @@ System.out.println(socketChannel.getRemoteAddress());
 
 private void write(SelectionKey key) throws IOException {
     SocketChannel socketChannel = (SocketChannel) key.channel();
-    ByteBuffer dummyResponse = ByteBuffer.wrap("ok".getBytes("UTF-8"));
 
+
+
+   // System.out.println("outsocketaddress:                             : "+socketChannel.getRemoteAddress());
+    outgoingdata(socketChannel.getRemoteAddress().toString(), socketChannel, TcpTxTunnel);
+    
+    
+    
+    /*    ByteBuffer dummyResponse = ByteBuffer.wrap("ok".getBytes("UTF-8"));
     socketChannel.write(dummyResponse);
     if (dummyResponse.remaining() > 0) {
         System.err.print("Filled UP");
-    }
+    }*/
 
-    key.interestOps(SelectionKey.OP_READ);
+    key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
 }
 
 private Selector initSelector() throws IOException {
@@ -158,5 +184,49 @@ private Selector initSelector() throws IOException {
     return socketSelector;
 }
 
+
+private void incomingdata(String ip_port, ByteBuffer incoming_data, Map<String, List<ByteBuffer>> incoming_tunnel){
+	System.out.println("INCOMING DATA: "+ ip_port);
+	
+	   byte[] oldBytes = incoming_data.array();
+	    byte[] copiedBytes = new byte[incoming_data.position()];
+	    // (Object src, int srcPos, Object dest, int destPos, int length) 
+	    System.arraycopy(oldBytes, 0, copiedBytes, 0, incoming_data.position());
+	    ByteBuffer duplicate = ByteBuffer.wrap(copiedBytes);
+	    
+	   // System.out.println(duplicate);
+	    
+	    List<ByteBuffer> list = null;
+	    
+	    list = incoming_tunnel.get(ip_port);
+	    if( list == null) list = new ArrayList<ByteBuffer>();
+	    
+	    list.add(duplicate);
+	    incoming_tunnel.put(ip_port, list);
+	    
+	    System.out.println(incoming_tunnel.keySet());
+	    
+	    //TODO
+	   // System.out.println("itt kell folytatni");
+	 
+}
+
+private void outgoingdata(String ip_port, SocketChannel out_data_socket, Map<String, List<ByteBuffer>> outgoing_tunnel)  throws IOException{
+	if(outgoing_tunnel.isEmpty()) return;
+	
+	List<ByteBuffer> list = null;
+    list = outgoing_tunnel.get(ip_port);
+    if( list == null) return;
+    
+    ByteBuffer data = null;
+   data = list.remove(0);
+   
+   if (data == null){
+	   outgoing_tunnel.remove(ip_port);
+   }
+   
+   out_data_socket.write(data);
+	
+}
 
 }

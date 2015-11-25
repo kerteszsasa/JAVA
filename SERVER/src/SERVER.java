@@ -9,6 +9,8 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import NODES.TCP_NODE;
+
 
 public class SERVER {
     public static void main(String[] args) {
@@ -17,8 +19,15 @@ public class SERVER {
     	Map<String, List<ByteBuffer> > RXmap = new HashMap<String, List<ByteBuffer>>();
     	Map<String, List<ByteBuffer> > TXmap = new HashMap<String, List<ByteBuffer>>();
         // create a synchronized map
-        Map<String, List<ByteBuffer>> TcpRxTunnel = Collections.synchronizedMap(RXmap);
-        Map<String, List<ByteBuffer>> TcpTxTunnel = Collections.synchronizedMap(TXmap);
+        Map<String, List<ByteBuffer>> TcpRxTunnel = Collections.synchronizedMap(RXmap);					// ip:port   --->  TCP packet LIST
+        Map<String, List<ByteBuffer>> TcpTxTunnel = Collections.synchronizedMap(TXmap);					// ip:port   --->  TCP packet LIST
+        
+        Map<String, TCP_NODE> NodeMAP = new HashMap<String, TCP_NODE>();								// node MAC  --->  NODE LIST
+        
+        
+        
+        //node connection request: CONNECT \n mac_address \n node_description \n
+        //admin connection request: CONNECT\nADMIN
         
         
         
@@ -103,7 +112,7 @@ public class SERVER {
 		
 		
 			try {
-				new TCP_NIO_server();
+				new TCP_NIO_server(30303, TcpRxTunnel, TcpTxTunnel);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -121,7 +130,7 @@ public class SERVER {
 				}
 			
 		//	System.out.println("TODO: ide kell a process szál");
-			Process process = new Process();
+			Process process = new Process(TcpRxTunnel, TcpTxTunnel, NodeMAP);
 			
 			
 			/*	System.out.println("UDP broadcaster thread started");
@@ -138,9 +147,9 @@ public class SERVER {
 		
 
 		try {
-			Gui frame = new Gui(espinterface);
+		//	Gui frame = new Gui(espinterface);
 			System.out.println("Main thread still running after start GUI \n");
-			frame.setVisible(true);
+			//frame.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
